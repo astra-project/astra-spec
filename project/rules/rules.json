@@ -619,7 +619,7 @@
       "code": "ABSENT_RESULT",
       "layer": "check",
       "level": "SHOULD",
-      "statement": "Its recorded bytes are at its default place, bar an unread result from a commit",
+      "statement": "Its recorded bytes, or a stand-in for them, are at its default place, bar an unread result from a commit",
       "status": "`absent`"
     },
     {
@@ -633,7 +633,7 @@
       "code": "UNRECORDED_RESULT",
       "layer": "runner",
       "level": "MUST",
-      "statement": "A runner writes each result it makes: a record at each place, bytes at each default place"
+      "statement": "A runner writes each result it makes: a record at each place, bytes or a stand-in for them at each default place"
     },
     {
       "code": "FALSE_RECORD",
