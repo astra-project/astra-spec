@@ -6,7 +6,7 @@ If you'd rather see the schema first, jump to the [specification](specification.
 
 ## Scaffold a project
 
-Use [`astra init`](cli.md#astra-init) to create a minimal project layout:
+Use [`astra init`](tools/cli.md#astra-init) to create a minimal project layout:
 
 ```bash
 astra init my-analysis
@@ -69,7 +69,7 @@ A few things worth noting:
 
 ## Validate
 
-Run [`astra validate`](cli.md#astra-validate) on the analysis's folder:
+Run [`astra validate`](tools/cli.md#astra-validate) on the analysis's folder:
 
 ```bash
 astra validate .
@@ -99,7 +99,7 @@ Non-blocking warnings print in yellow: the validator still returns success but s
 
 ## Inspect
 
-[`astra info`](cli.md#astra-info) prints a Rich-rendered summary: the analysis's label and description, then its inputs, outputs, decisions and universes, followed by the same for each analysis it declares, if any.
+[`astra info`](tools/cli.md#astra-info) prints a Rich-rendered summary: the analysis's label and description, then its inputs, outputs, decisions and universes, followed by the same for each analysis it declares, if any.
 
 ```bash
 astra info
@@ -135,7 +135,7 @@ example_method: Example Method
     └── option_b: Option B
 ```
 
-Once the analysis has universes (next section), `astra info` lists them, and [`astra view`](cli.md#astra-view) shows the analysis as it is in one of them: the option it selects for each decision, and each output's result with where it goes.
+Once the analysis has universes (next section), `astra info` lists them, and [`astra view`](tools/cli.md#astra-view) shows the analysis as it is in one of them: the option it selects for each decision, and each output's result with where it goes.
 
 ## Define universes
 
@@ -210,18 +210,18 @@ decisions:
 
 The chain *option → insight → evidence → DOI* is what gives a decision an auditable trail back to the literature.
 
-[`astra validate --verify-evidence`](cli.md#astra-validate) reads each evidence entry that cites a DOI, looks up the cached PDF for that DOI, and fuzzy-matches the `quote.exact` against the extracted text; where the evidence has a `location` that gives a page, the quote must be on that page:
+[`astra validate --verify-evidence`](tools/cli.md#astra-validate) reads each evidence entry that cites a DOI, looks up the cached PDF for that DOI, and fuzzy-matches the `quote.exact` against the extracted text; where the evidence has a `location` that gives a page, the quote must be on that page:
 
 ```bash
 astra validate . --verify-evidence
 ```
 
-Papers are kept in astra's cache (`~/.cache/astra/papers/` on Linux). [`astra paper add`](cli.md#astra-paper) puts one there: it downloads an arXiv paper, and takes any other from a PDF you give with `--pdf`. `astra paper list` shows the papers the cache holds, and `astra paper path` gives a cached PDF's path, to read the paper and copy a quote from it. A paper missing from the cache, or a quote not found, is an error of the validation report.
+Papers are kept in astra's cache (`~/.cache/astra/papers/` on Linux). [`astra paper add`](tools/cli.md#astra-paper) puts one there: it downloads an arXiv paper, and takes any other from a PDF you give with `--pdf`. `astra paper list` shows the papers the cache holds, and `astra paper path` gives a cached PDF's path, to read the paper and copy a quote from it. A paper missing from the cache, or a quote not found, is an error of the validation report.
 
-Artifact-backed evidence (typical for `findings:`) cites an output's results rather than a paper: `--verify-evidence` counts it as skipped, and [`astra check`](cli.md#astra-check) gives it the status of the results it cites.
+Artifact-backed evidence (typical for `findings:`) cites an output's results rather than a paper: `--verify-evidence` counts it as skipped, and [`astra status`](tools/cli.md#astra-status) gives it the status of the results it cites.
 
 ## What ASTRA doesn't run
 
-The CLI validates and inspects analyses, and checks results against their records; it does **not** execute recipes. Each `recipe.command` is a POSIX shell command that a runner — an agent, a workflow runner, a notebook, or you on the command line — reads and invokes ([Results](specification.md#results)). The runner materialises the declared inputs (giving each one a concrete on-disk path), picks an output path, expands the `{inputs.<id>}` / `{inputs}` / `{decisions.<id>}` / `{output}` placeholders against the universe being built, runs the resulting command, and writes the result with a record of the run, which [`astra check`](cli.md#astra-check) later compares with the analysis.
+The CLI validates and inspects analyses, and checks results against their records; it does **not** execute recipes. Each `recipe.command` is a POSIX shell command that a runner — an agent, a workflow runner, a notebook, or you on the command line — reads and invokes ([Results](specification.md#results)). The runner materialises the declared inputs (giving each one a concrete on-disk path), picks an output path, expands the `{inputs.<id>}` / `{inputs}` / `{decisions.<id>}` / `{output}` placeholders against the universe being built, runs the resulting command, and writes the result with a record of the run, which [`astra status`](tools/cli.md#astra-status) later compares with the analysis.
 
 This separation is intentional: the spec stays stable as the agent and execution layer evolves. ASTRA's job is to make every analytical choice explicit, traceable, and verifiable; the choice of *runner* is yours.

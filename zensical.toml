@@ -18,12 +18,17 @@ nav = [
       { "Home" = "index.md" },
       { "Installation" = "installation.md" },
       { "Getting started" = "getting-started.md" },
-      { "CLI reference" = "cli.md" },
       { "About" = "about.md" },
   ] },
   { "Specification" = [
       { "Format reference" = "specification.md" },
       { "Field reference" = "elements/index.md" },
+  ] },
+  { "Python & CLI" = [
+      { "Overview" = "tools/index.md" },
+      { "CLI reference" = "tools/cli.md" },
+      { "Python API" = "tools/api.md" },
+      { "Data model" = "tools/data-model.md" },
   ] },
   { "Community" = [
       { "Overview" = "community.md" },
@@ -37,6 +42,15 @@ nav = [
 # (e.g. /0.0.9/, /latest/). The picker is rendered natively in the header.
 [project.extra.version]
 provider = "mike"
+
+# The other ASTRA projects whose documentation this site shows. Each keeps its
+# reference in the docs/ folder of its own repository: `just docs` mounts that
+# folder, as it is at the tag `ref`, under docs/<name>/ (tools/docs_projects.py),
+# and the nav above lists its pages under a tab. To show a new release of a
+# project, move its `ref`.
+[project.extra.projects.tools]
+repo = "https://github.com/astra-project/astra-tools"
+ref = "v0.3.0rc2"
 
 [project.theme]
 

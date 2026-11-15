@@ -15,3 +15,16 @@
   <meta property="og:image:height" content="640">
   <meta name="twitter:card" content="summary_large_image">
 {% endblock %}
+
+{#- A page of another project (zensical.toml's [project.extra.projects], mounted
+    under the folder of its name) says, above its title, which release of the
+    project it describes, and links to the pages' source at that release. -#}
+{% block content %}
+  {% set mounted = config.extra.projects[page.url | split("/") | first] %}
+  {% if mounted %}
+    <a class="astra-project" href="{{ mounted.repo }}/tree/{{ mounted.ref }}/docs">
+      {{- mounted.repo | split("/") | last }} <span>{{ mounted.ref }}</span>
+    </a>
+  {% endif %}
+  {{ super() }}
+{% endblock %}
