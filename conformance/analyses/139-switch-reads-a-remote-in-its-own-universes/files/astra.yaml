@@ -1,0 +1,30 @@
+spec_version: "0.1.0"
+analyses:
+  noise:
+    url: "@url:noise@"
+    commit: "@commit:N@"
+inputs:
+  readings:
+    path: data/readings.csv
+decisions:
+  noise_model:
+    options:
+      white: {}
+      pink: {}
+outputs:
+  noise_psd:
+    switch: noise_model
+    cases:
+      white: noise.psd#white
+      pink: noise.psd#pink
+  differences:
+    type: data
+    format: csv
+    inputs: [readings, noise_psd]
+    recipe:
+      command: python make.py '{inputs.readings}' '{inputs.noise_psd}' '{output}'
+universes:
+  u1:
+    decisions: {noise_model: white}
+  u2:
+    decisions: {noise_model: pink}

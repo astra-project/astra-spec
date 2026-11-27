@@ -461,7 +461,8 @@ classes:
           or, for a decision of another analysis, a flat key: the decision's
           address through the declarations, `<declaration>.<decision>`, such
           as `subanalysis.decision1`, or another spelling of that address,
-          through no declaration back to an analysis already on its chain.
+          through no declaration back to an analysis already on its chain,
+          and none with a `commit`.
       analysis:
         range: address
         description: >-
@@ -584,7 +585,8 @@ classes:
         description: >-
           The full id of the commit the declared analysis is read at. A
           declaration with a `url` has one; with a `path`, it declares the
-          analysis at that path as it was at that commit.
+          analysis at that path as it was at that commit. The declared
+          analysis is read, never driven through this declaration.
     # LinkML can't annotate the exactly_one_of list itself, so each branch
     # names the code, the same one.
     exactly_one_of:

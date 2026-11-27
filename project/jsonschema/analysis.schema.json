@@ -65,7 +65,7 @@
       "description": "An analysis that this analysis uses, found by exactly one of `path` and `url`. Its elements are addressed through the declaration's id, as `<declaration>.<element>`.",
       "properties": {
         "commit": {
-          "description": "The full id of the commit the declared analysis is read at. A declaration with a `url` has one; with a `path`, it declares the analysis at that path as it was at that commit.",
+          "description": "The full id of the commit the declared analysis is read at. A declaration with a `url` has one; with a `path`, it declares the analysis at that path as it was at that commit. The declared analysis is read, never driven through this declaration.",
           "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$",
           "type": "string"
         },
@@ -873,7 +873,7 @@
             "pattern": "^[a-z][a-z0-9_]*$",
             "type": "string"
           },
-          "description": "The options the universe selects, as `<decision>: <option>`, one key per decision. Each key is the id of a decision of the analysis or, for a decision of another analysis, a flat key: the decision's address through the declarations, `<declaration>.<decision>`, such as `subanalysis.decision1`, or another spelling of that address, through no declaration back to an analysis already on its chain.",
+          "description": "The options the universe selects, as `<decision>: <option>`, one key per decision. Each key is the id of a decision of the analysis or, for a decision of another analysis, a flat key: the decision's address through the declarations, `<declaration>.<decision>`, such as `subanalysis.decision1`, or another spelling of that address, through no declaration back to an analysis already on its chain, and none with a `commit`.",
           "propertyNames": {
             "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
           },

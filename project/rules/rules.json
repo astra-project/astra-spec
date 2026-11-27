@@ -563,6 +563,12 @@
       "statement": "No universe key goes through a declaration that leads back"
     },
     {
+      "code": "KEY_THROUGH_COMMIT",
+      "layer": "validator",
+      "level": "MUST",
+      "statement": "No universe key goes through a declaration with a `commit`"
+    },
+    {
       "code": "UNKNOWN_PIN_UNIVERSE",
       "layer": "validator",
       "level": "MUST",
@@ -670,12 +676,6 @@
       "layer": "runner",
       "level": "MUST",
       "statement": "Each recipe runs in its own analysis's folder, even when driven"
-    },
-    {
-      "code": "NOT_AT_COMMIT",
-      "layer": "runner",
-      "level": "MUST",
-      "statement": "A runner drives an analysis from a commit on exactly its files at that commit"
     },
     {
       "code": "REBUILT_FROM_COMMIT",

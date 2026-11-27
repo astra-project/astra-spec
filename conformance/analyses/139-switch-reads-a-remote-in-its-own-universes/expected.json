@@ -1,0 +1,5 @@
+{
+  "about": "A switch's cases read a remote's output pinned to two of the remote's universes, so each universe of the analysis reads one of them, and none drives the remote.",
+  "valid": true,
+  "must_not_report": ["KEY_THROUGH_COMMIT", "NOT_BUILT_IN_UNIVERSE", "UNDRIVEN_DECLARATION"]
+}

@@ -231,8 +231,12 @@ folder `analysis/`, the top of its repository, and its paths are relative.
     built per universe, without a pin
 
 - The analysis being validated or built, here `analysis`, is the **driving
-  analysis**. Its universes can set the decisions of the analyses it declares, and of those
-  they declare in turn; where they do, it **drives** them:
+  analysis**. Its universes can set the decisions of the analyses it
+  declares by `path`, with no `commit`, and of those they declare so in
+  turn; where they do, it **drives** them. As only a self-contained
+  analysis has universes of its own, a universe sets decisions only of
+  analyses inside its own analysis's folder, in the working tree or at the
+  commit its analysis is read at:
 
   ```yaml
   universes:
@@ -324,6 +328,16 @@ folder `analysis/`, the top of its repository, and its paths are relative.
         decisions:
           decision1: b       # self.decision1: b would break LOOPING_KEY
     ```
+
+  - A universe can't set a decision through a declaration with a `commit`,
+    such as `previous` or `upstream`, nor through anything they declare:
+    `previous.decision1: b` would break `KEY_THROUGH_COMMIT`, not
+    `LOOPING_KEY`, as `previous` is another analysis. Through them, an
+    output reads only what doesn't vary there: their inputs, their outputs
+    built once, and their results pinned to their own universes. At its
+    commit, the analysis so declared is still judged with its own
+    universes, which drive what it declares there by `path`, with no
+    `commit`.
 
   - `stage`'s own universes, such as `v1`, don't set its decisions in `u1`
     and `u2`, but must still be valid, with `stage` as the driving
@@ -526,10 +540,8 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   an analysis declared with a `commit`, and of the analyses it declares,
   directly or not, are **results from a commit**: never rebuilt, but read
   through their records, and their bytes (or a stand-in), at their
-  analysis's commit. Driven, such an analysis runs its recipes on exactly
-  its files at its commit. A switch of such an analysis is read with its
-  files at its commit: the result its case gives is a result from a commit
-  or, where the analysis is driven, one built on its files at that commit.
+  analysis's commit. A switch of such an analysis is read with its
+  files at its commit: the result its case gives is a result from a commit.
   - at its commit, `upstream` has an output `output4`, built once, with its
     result and record committed: the runner reads them and runs no recipe
     of `upstream`'s
@@ -693,6 +705,7 @@ after the arrow. Rows that share a code are cases of one rule.
 | `DUPLICATE_ELEMENT` | MUST | No two keys of a universe's own `decisions` name one decision |
 | `DUPLICATE_ELEMENT` | MUST | A universe sets an inherited decision only under the key it inherits |
 | `LOOPING_KEY` | MUST | No universe key goes through a declaration that leads back |
+| `KEY_THROUGH_COMMIT` | MUST | No universe key goes through a declaration with a `commit` |
 | `UNKNOWN_PIN_UNIVERSE` | MUST | Every pin names a universe: its analysis's entry or, lacking one, that of the analysis whose element its reference names |
 | `PIN_NOT_BUILT` | MUST | Every pinned output is built in the universe it is pinned to |
 | `PIN_NOT_BUILT` | MUST | Where a reached pin names a universe of an analysis other than the driving analysis, that universe sets each decision, of its analysis or one its universes drive, that what is reached through the pin uses there and it doesn't use itself |
@@ -716,7 +729,6 @@ after the arrow. Rows that share a code are cases of one rule.
 | `UNCOMMITTED_CHANGES` | MUST | Each recipe runs in a commit's checkout changed only by records and recorded results |
 | `UNCOMMITTED_CHANGES` | MUST | There, untracked files and submodules count as changes; ignored files don't |
 | `WRONG_WORKING_DIRECTORY` | MUST | Each recipe runs in its own analysis's folder, even when driven |
-| `NOT_AT_COMMIT` | MUST | A runner drives an analysis from a commit on exactly its files at that commit |
 | `REBUILT_FROM_COMMIT` | MUST | A runner builds no result from a commit, and reads each through its record at its analysis's commit |
 | `STALE_INPUT` | MUST | A runner builds nothing from a result from a commit that is missing, stale or lacks its recorded bytes |
 | `UNDECLARED_READ` | SHOULD | A recipe reads input files and other results only through its output's `inputs` |

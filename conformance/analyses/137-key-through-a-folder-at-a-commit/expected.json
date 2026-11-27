@@ -1,0 +1,7 @@
+{
+  "about": "A universe's key goes through a declaration of a folder at a commit.",
+  "valid": false,
+  "must_report": [
+    {"code": "KEY_THROUGH_COMMIT", "file": "astra.yaml"}
+  ]
+}
