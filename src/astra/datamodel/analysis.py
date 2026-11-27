@@ -818,27 +818,29 @@ class Insight(YAMLRoot):
 # Enumerations
 class OutputType(EnumDefinitionImpl):
     """
-    The kind of artefact an output is.
+    The kind of artefact an output is. A `metric` is one quantity, with its uncertainty, unit or label if it has them:
+    as JSON, a bare number or string, or an object with a `value` and optional `uncertainty`, `unit` and `label`.
+    Several quantities, such as the whole record of a fit, are `data` or a `table`.
     """
     metric = PermissibleValue(
         text="metric",
-        description="A metric or measurement")
+        description="A single quantity, such as a measurement, a fitted parameter or a score.")
     figure = PermissibleValue(
         text="figure",
-        description="A figure or visualization")
+        description="A plot, chart, map or other image.")
     table = PermissibleValue(
         text="table",
-        description="A table of data")
+        description="Records in rows and columns, such as a CSV file or a table for a paper.")
     data = PermissibleValue(
         text="data",
-        description="A data file or dataset")
+        description="Any other data, such as a dataset, a model or a record of several quantities.")
     report = PermissibleValue(
         text="report",
-        description="A report or document")
+        description="Prose for people to read, such as a paper, a notebook or a web page.")
 
     _defn = EnumDefinition(
         name="OutputType",
-        description="The kind of artefact an output is.",
+        description="""The kind of artefact an output is. A `metric` is one quantity, with its uncertainty, unit or label if it has them: as JSON, a bare number or string, or an object with a `value` and optional `uncertainty`, `unit` and `label`. Several quantities, such as the whole record of a fit, are `data` or a `table`.""",
     )
 
 # Slots

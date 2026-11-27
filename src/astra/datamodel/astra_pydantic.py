@@ -104,27 +104,27 @@ linkml_meta = LinkMLMeta({'default_prefix': 'astra',
 
 class OutputType(str, Enum):
     """
-    The kind of artefact an output is.
+    The kind of artefact an output is. A `metric` is one quantity, with its uncertainty, unit or label if it has them: as JSON, a bare number or string, or an object with a `value` and optional `uncertainty`, `unit` and `label`. Several quantities, such as the whole record of a fit, are `data` or a `table`.
     """
     metric = "metric"
     """
-    A metric or measurement
+    A single quantity, such as a measurement, a fitted parameter or a score.
     """
     figure = "figure"
     """
-    A figure or visualization
+    A plot, chart, map or other image.
     """
     table = "table"
     """
-    A table of data
+    Records in rows and columns, such as a CSV file or a table for a paper.
     """
     data = "data"
     """
-    A data file or dataset
+    Any other data, such as a dataset, a model or a record of several quantities.
     """
     report = "report"
     """
-    A report or document
+    Prose for people to read, such as a paper, a notebook or a web page.
     """
 
 

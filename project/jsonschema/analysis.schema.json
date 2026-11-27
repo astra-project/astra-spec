@@ -378,7 +378,7 @@
       "type": "object"
     },
     "OutputType": {
-      "description": "The kind of artefact an output is.",
+      "description": "The kind of artefact an output is. A `metric` is one quantity, with its uncertainty, unit or label if it has them: as JSON, a bare number or string, or an object with a `value` and optional `uncertainty`, `unit` and `label`. Several quantities, such as the whole record of a fit, are `data` or a `table`.",
       "enum": [
         "metric",
         "figure",
