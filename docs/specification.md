@@ -571,7 +571,11 @@ folder `analysis/`, and its paths are relative.
   | `analysis/src/output1.py` is edited | Every result stays unchanged; once `output1` is rebuilt with other bytes, `output2` is stale |
 
 - A result's bytes are **present** if its default place (below) holds the
-  recorded ones, else **absent**. The record of a result from a commit, at
+  recorded ones, or a stand-in through which they are read there, else
+  **absent**. A stand-in may take their place as it may an input's: where
+  it stands for the recorded bytes and they aren't there, they are absent
+  and `ABSENT_RESULT` isn't broken. One that gives no hash is taken to
+  stand for them. The record of a result from a commit, at
   the declared commit B, names an earlier commit A; the result is unchanged
   if nothing compared changed between A and B and the results it was made
   from are unchanged, and gets a bytes status, from what B holds, only if a
@@ -686,10 +690,10 @@ after the arrow. Rows that share a code are cases of one rule.
 | `MISPLACED_RECORD` | MUST | Its `address` is the one its place is worked out from → `missing` |
 | `MISSING_RECORD_INPUTS` | MUST | Its `inputs` hold one item per entry its output lists at its commit, by `entry`, no more → `missing` |
 | `STALE_RESULT` | MUST | Nothing the result is made from has changed since its record's commit → `stale` |
-| `ABSENT_RESULT` | SHOULD | Its recorded bytes are at its default place, bar an unread result from a commit → `absent` |
+| `ABSENT_RESULT` | SHOULD | Its recorded bytes, or a stand-in for them, are at its default place, bar an unread result from a commit → `absent` |
 | `STALE_EVIDENCE` | MUST | Evidence citing a result cites an unchanged one → the result's record status |
 | **runner** | | |
-| `UNRECORDED_RESULT` | MUST | A runner writes each result it makes: a record at each place, bytes at each default place |
+| `UNRECORDED_RESULT` | MUST | A runner writes each result it makes: a record at each place, bytes or a stand-in for them at each default place |
 | `FALSE_RECORD` | MUST | Every field of a record a runner writes is true of its run |
 | `UNRECREATABLE_ENVIRONMENT` | MUST | A runner records each recipe's environment as an IRI it can recreate at its version |
 | `UNCOMMITTED_CHANGES` | MUST | Each recipe runs in a commit's checkout changed only by records and recorded results |
