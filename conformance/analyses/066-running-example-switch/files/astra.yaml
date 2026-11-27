@@ -27,7 +27,7 @@ outputs:
   output2:
     type: table
     format: csv
-    inputs: [output1#u1, output1#u2, stage.output3#v1]
+    inputs: [output1#u1, output1#u2]
     recipe:
       command: python src/output2.py {inputs} '{output}'
   switch1:

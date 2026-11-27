@@ -13,7 +13,7 @@ from committed files and writes a **record** of how each was made, and a
 
 An `astra.yaml` (YAML 1.2) gives its `spec_version` (`"0.1.0"`) and maps of
 **elements**, each keyed by its **id** (`[a-z][a-z0-9_]*`). The snippets
-below are excerpts of `analysis/astra.yaml`, the file of the analysis in the
+below are parts of `analysis/astra.yaml`, the file of the analysis in the
 folder `analysis/`, the top of its repository, and its paths are relative.
 
 - An analysis can **declare** other analyses:
@@ -42,16 +42,9 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   **identity**: one folder at one commit is one analysis however it is
   declared, and **another analysis** is one with another identity.
 
-  An analysis is **self-contained** if it reaches outside its folder only
-  through `url` and `commit`: no declaration by `path`, with or without a
-  `commit`, names a folder outside that analysis's folder, whether it is
-  in that analysis's file or in one reached from it through declarations
-  by `path`. Any other analysis is a **part**, such as `tools` (below), or
-  an analysis that declares its own folder at a commit where that folder
-  declared `..`. A part keeps its decisions, and the universes of an
-  analysis above it set them (below). The analysis at the top of a repository,
-  such as `analysis`, is self-contained unless a declaration it reaches by
-  `path` goes above that top, which breaks `DECLARATION_OUTSIDE_REPOSITORY`.
+  An analysis in a folder below the top of its repository, such as `stage`,
+  is a **sub-analysis**. It has no `universes`: those of the analysis at
+  the top, here `analysis`, set its decisions (below).
 
 - An **input** is one file, tracked in git with its analysis, at a `path`
   from the analysis's folder; a **stand-in**, such as a large-file pointer,
@@ -155,9 +148,7 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   own analysis's by id, another's by address. With `derived_from` it
   inherits another universe's selection, replacing what it sets: its
   **effective selection**. Its own `decisions` set only decisions it uses
-  on some branch, and should set only those it uses. Only a self-contained
-  analysis has universes of its own: a part's `universes` hold only
-  imports (below).
+  on some branch, and should set only those it uses.
 
   ```yaml
   universes:
@@ -189,14 +180,14 @@ folder `analysis/`, the top of its repository, and its paths are relative.
     output2:
       type: table
       format: csv
-      inputs: [output1#u1, output1#u2, stage.output3#v1]
+      inputs: [output1#u1, output1#u2, upstream.output12#v1]
       recipe:
         command: python src/output2.py {inputs} {output}
   ```
 
   - `output2` reads `output1` as built in `u1` and in `u2`
-  - `analysis` has no `v1`, so `stage.output3#v1` reads `stage`'s own
-    result in its `v1`
+  - `analysis` has no `v1`, so `upstream.output12#v1` reads `upstream`'s
+    own result in its `v1`
   - a pinned switch reads as it is in its pin's universe: `switch1#u1`
     reads `stage.output3` as built in `u1`
 
@@ -233,10 +224,10 @@ folder `analysis/`, the top of its repository, and its paths are relative.
 - The analysis being validated or built, here `analysis`, is the **driving
   analysis**. Its universes can set the decisions of the analyses it
   declares by `path`, with no `commit`, and of those they declare so in
-  turn; where they do, it **drives** them. As only a self-contained
-  analysis has universes of its own, a universe sets decisions only of
-  analyses inside its own analysis's folder, in the working tree or at the
-  commit its analysis is read at:
+  turn; where they do, it **drives** them. As a sub-analysis has no
+  universes, a universe sets decisions only of sub-analyses in its own
+  analysis's repository, in the working tree or at the commit its analysis
+  is read at:
 
   ```yaml
   universes:
@@ -246,8 +237,7 @@ folder `analysis/`, the top of its repository, and its paths are relative.
         stage.decision2: b
   ```
 
-  In `u1`, `stage` is built with `decision2: b`, whatever its own universes
-  say. The `stage.output3` that `output1` reads is built with `b` selected
+  In `u1`, `stage` is built with `decision2: b`. The `stage.output3` that `output1` reads is built with `b` selected
   for `stage.decision2`, and its result belongs to `analysis`.
 
   A universe sets a decision further down by its full address. Were `stage`
@@ -287,8 +277,8 @@ folder `analysis/`, the top of its repository, and its paths are relative.
     ```
 
     this chain isn't driven, even though `stage.inner` is. Through it,
-    `output11` can read `inner`'s outputs built once, or pinned to `inner`'s
-    own universes, but not one built per universe in `u1` or `u2`.
+    `output11` can read `inner`'s outputs built once, but not one built per
+    universe in `u1` or `u2`.
 
   - An analysis with no decisions of its own, or none that a universe of
     the driving analysis uses, has nothing to set. Were
@@ -314,11 +304,9 @@ folder `analysis/`, the top of its repository, and its paths are relative.
       results belong to `analysis`
     - were `tools` to have a decision that only `output9` lists, it would
       still have nothing to set, as `analysis` reads nothing of `output9`
-    - `tools` declares `..`, outside its folder, so it is a part, and has
-      no universes of its own
 
   - An analysis never drives itself. A universe can't set a decision through
-    a declaration that leads back, such as `self: {path: .}`, or `tools`'s
+    a declaration that leads back, such as `self: {path: .}`, or `stage`'s
     `parent: {path: ..}`. Writing `self.decision1: b` instead of
     `decision1: b` would break `LOOPING_KEY`:
 
@@ -339,14 +327,10 @@ folder `analysis/`, the top of its repository, and its paths are relative.
     universes, which drive what it declares there by `path`, with no
     `commit`.
 
-  - `stage`'s own universes, such as `v1`, don't set its decisions in `u1`
-    and `u2`, but must still be valid, with `stage` as the driving
-    analysis: a `v1` that left `decision2` unset would break
-    `MISSING_DECISION`, as `stage` plans `output3`, which lists it. A pin
-    into `v1` can then read only what uses decisions that `v1` uses on some
-    branch, as `v1` may set no other. `stage` declares nothing outside its
-    folder, so it is self-contained and can have them; `tools`, a part,
-    couldn't have a `v1`.
+  - `upstream`'s own universes, such as `v1`, must be valid, with
+    `upstream` as the driving analysis at its commit. A pin into `v1` can
+    then read only what uses decisions that `v1` uses on some branch, as
+    `v1` may set no other.
 
   - An output that reads another analysis's output built per universe, or
     its switch, without a pin or pinned to one of its own analysis's
@@ -364,8 +348,8 @@ folder `analysis/`, the top of its repository, and its paths are relative.
 
     `output1` would break `NOT_BUILT_IN_UNIVERSE`: nothing would say which
     `decision2` to build `stage.output3` with. It could still read what
-    doesn't vary: `stage.input2`, `stage.output3#v1`, or `upstream.output4`,
-    which is built once.
+    doesn't vary: `stage.input2`, `upstream.output4`, which is built once,
+    or `upstream.output12#v1`.
 
   - A switch can choose between analyses. Were `analysis/astra.yaml` also
     to declare `fast` and `slow`, each with an output `fit` that lists a
@@ -386,29 +370,28 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   shared by several, such as a seed, is read by address from the analysis
   that holds it.
 
-- Were `stage` to have a `u1` of its own, `#u1` in `analysis/astra.yaml`
-  would still name `analysis`'s. To read `stage`'s own `u1` too it must be **imported** under
-  another id and pinned to that. An import
-  selects and drives nothing, and it is the only entry a part's
-  `universes` may hold.
+- `previous` has a `u1` too, but `#u1` in `analysis/astra.yaml` still
+  names `analysis`'s. To read `previous`'s own `u1` it must be **imported**
+  under another id and pinned to that. An import selects and drives
+  nothing.
 
   ```yaml
   universes:
-    stage_u1: {analysis: stage, universe: u1}
+    previous_u1: {analysis: previous, universe: u1}
   outputs:
     output5:
       type: table
       format: csv
       inputs:
-        - stage.output3#u1
-        - stage.output3#stage_u1
+        - output1#u1
+        - previous.output1#previous_u1
       recipe:
         command: python src/output5.py {inputs} {output}
   ```
 
-  - `stage.output3#u1` is built in, and belongs to, `analysis`'s `u1`
-  - `stage.output3#stage_u1` is built in `stage`'s own `u1` and belongs to
-    `stage`
+  - `output1#u1` is built in, and belongs to, `analysis`'s `u1`
+  - `previous.output1#previous_u1` is built in `previous`'s own `u1` and
+    belongs to `previous`
 
 - An **insight** is a `claim` whose `evidence` cites a `doi` or an output
   (`artifact`): `prior_insights` are what the analysis builds on, `findings`
@@ -504,9 +487,6 @@ folder `analysis/`, the top of its repository, and its paths are relative.
       decisions: [decision2]
       recipe:
         command: python src/output3.py {inputs.input2} {decisions.decision2} {output}
-  universes:
-    v1:
-      decisions: {decision2: a}
   ```
 
   the build is:
@@ -524,15 +504,15 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   │  stage.output3 (decision2 = b) ─┼─► output1          │── #u2 ──► output2 ◄── insight1
   │  upstream.output4 ──────────────┘   (decision1 = a)  │         ▲
   └──────────────────────────────────────────────────────┘         │
-  ┌─ v1 · stage's own ───────────────────────────────────┐         │
-  │  output3 (decision2 = a)                             │── #v1 ──┘
+  ┌─ v1 · upstream's own ────────────────────────────────┐         │
+  │  output12, read at its commit                        │── #v1 ──┘
   └──────────────────────────────────────────────────────┘
   ```
 
   - the planned results are `output2`, `output1` in `u1` and `u2`,
-    `output6` in `u1`, `stage.output3` in `u1`, `u2` and `v1`, and
-    `upstream.output4`; `output6` isn't built in `u2`, where `switch1` has
-    no case for `a`
+    `output6` in `u1`, `stage.output3` in `u1` and `u2`, `upstream.output4`,
+    and `upstream.output12` in `v1`; `output6` isn't built in `u2`, where
+    `switch1` has no case for `a`
 
 - A **runner** builds each planned result by running its output's recipe in
   a checkout of a commit, with no changes but records and results, and
@@ -542,9 +522,9 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   through their records, and their bytes (or a stand-in), at their
   analysis's commit. A switch of such an analysis is read with its
   files at its commit: the result its case gives is a result from a commit.
-  - at its commit, `upstream` has an output `output4`, built once, with its
-    result and record committed: the runner reads them and runs no recipe
-    of `upstream`'s
+  - at its commit, `upstream` has an output `output4`, built once, and an
+    output `output12`, built in its `v1`, with their results and records
+    committed: the runner reads them and runs no recipe of `upstream`'s
   - `previous` reads the analysis's own earlier results the same way
 
 - A **record** holds what its commit can't give: the result's address,
@@ -595,7 +575,7 @@ folder `analysis/`, the top of its repository, and its paths are relative.
 
   | Edit | Effect |
   |---|---|
-  | `analysis/stage/data/input2.csv` changes | The seven results built are stale; `upstream.output4` stays unchanged |
+  | `analysis/stage/data/input2.csv` changes | The six results built are stale; `upstream`'s stay unchanged |
   | `u2` selects `a` for `stage.decision2` | `stage.output3` and `output1` in `u2` are stale, and so is `output2`, which reads `output1#u2` |
   | `switch1`'s case for `b` becomes `upstream.output4` | `output6` in `u1` is stale |
   | `insight1`'s claim is reworded | Every result stays unchanged |
@@ -632,7 +612,6 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   analysis/.astra/records/u1/stage.output3.json    analysis/results/u1/stage.output3.csv
   analysis/.astra/records/u2/output1.json          analysis/results/u2/output1.json
   analysis/.astra/records/u2/stage.output3.json    analysis/results/u2/stage.output3.csv
-  analysis/stage/.astra/records/v1/output3.json    analysis/stage/results/v1/output3.csv
   ```
 
 ## Rules
@@ -693,7 +672,7 @@ after the arrow. Rows that share a code are cases of one rule.
 | `OUTPUT_CYCLE` | MUST | No output reads itself through `inputs` and `cases`, directly or not, pinned or not |
 | `UNDECLARED_TEMPLATE_REF` | MUST | Every brace of a `command`, read from the left, is in `{{`, `}}` or a placeholder |
 | `UNDECLARED_TEMPLATE_REF` | MUST | Placeholders are `{inputs}`, `{output}`, and `{inputs.<entry>}` or `{decisions.<entry>}` for entries as listed |
-| `UNIVERSES_IN_PART` | MUST | A part's `universes` hold only imports |
+| `UNIVERSES_IN_SUB_ANALYSIS` | MUST | A sub-analysis has no `universes` |
 | `UNKNOWN_DERIVED_FROM` | MUST | `derived_from` names a universe of its analysis, never an import |
 | `DERIVED_FROM_CYCLE` | MUST | No chain of `derived_from` loops back to its universe |
 | `UNUSED_DECISION` | MUST | A universe's own `decisions` set only decisions it uses on some branch |

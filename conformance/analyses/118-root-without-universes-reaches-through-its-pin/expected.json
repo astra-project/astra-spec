@@ -1,9 +1,9 @@
 {
   "about": "An analysis with no universes pins a declared analysis's output in that analysis's universe v1, where it reads an output of an analysis v1 doesn't drive.",
+  "root": "analysis",
   "valid": false,
   "must_report": [
-    {"code": "NOT_BUILT_IN_UNIVERSE", "file": "sub/astra.yaml"},
-    {"code": "UNDRIVEN_DECLARATION", "file": "sub/astra.yaml"}
-  ],
-  "must_not_report": ["UNIVERSES_IN_PART"]
+    {"code": "NOT_BUILT_IN_UNIVERSE", "file": "astra.yaml"},
+    {"code": "UNDRIVEN_DECLARATION", "file": "astra.yaml"}
+  ]
 }

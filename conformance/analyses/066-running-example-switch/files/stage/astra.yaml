@@ -15,6 +15,3 @@ outputs:
       command: >-
         python src/output3.py '{inputs.input2}' '{decisions.decision2}'
         '{output}'
-universes:
-  v1:
-    decisions: {decision2: a}

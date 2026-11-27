@@ -1,5 +1,0 @@
-{
-  "about": "An analysis declares a folder at an earlier commit, where that folder's universe drives an analysis it declares by path with no commit.",
-  "valid": true,
-  "must_not_report": ["KEY_THROUGH_COMMIT", "UNIVERSES_IN_PART", "DECLARED_ANALYSIS_INVALID"]
-}

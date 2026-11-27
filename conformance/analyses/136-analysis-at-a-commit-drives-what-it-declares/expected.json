@@ -1,0 +1,5 @@
+{
+  "about": "An analysis declares a remote at a commit, where the remote's universe drives an analysis it declares by path with no commit.",
+  "valid": true,
+  "must_not_report": ["KEY_THROUGH_COMMIT", "UNIVERSES_IN_SUB_ANALYSIS", "DECLARED_ANALYSIS_INVALID"]
+}
