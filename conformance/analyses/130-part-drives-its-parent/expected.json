@@ -1,0 +1,7 @@
+{
+  "about": "A sub-analysis that declares its parent with .. has a universe that drives the parent.",
+  "valid": false,
+  "must_report": [
+    {"code": "UNIVERSES_IN_PART", "file": "child/astra.yaml"}
+  ]
+}

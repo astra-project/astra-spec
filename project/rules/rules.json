@@ -497,6 +497,12 @@
       "statement": "Every brace of a `command`, read from the left, is in `{{`, `}}` or a placeholder; Placeholders are `{inputs}`, `{output}`, and `{inputs.<entry>}` or `{decisions.<entry>}` for entries as listed"
     },
     {
+      "code": "UNIVERSES_IN_PART",
+      "layer": "validator",
+      "level": "MUST",
+      "statement": "A part's `universes` hold only imports"
+    },
+    {
       "code": "UNKNOWN_DERIVED_FROM",
       "layer": "validator",
       "level": "MUST",

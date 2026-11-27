@@ -1,0 +1,11 @@
+spec_version: "0.1.0"
+inputs:
+  input1:
+    path: input1.csv
+outputs:
+  output1:
+    type: data
+    format: csv
+    inputs: [input1]
+    recipe:
+      command: python make.py '{inputs.input1}' '{output}'

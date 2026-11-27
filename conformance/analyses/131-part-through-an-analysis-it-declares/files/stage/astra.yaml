@@ -1,0 +1,20 @@
+spec_version: "0.1.0"
+analyses:
+  inner:
+    path: inner
+decisions:
+  decision1:
+    options:
+      a: {}
+      b: {}
+outputs:
+  output3:
+    type: table
+    format: csv
+    inputs: [inner.output2]
+    decisions: [decision1]
+    recipe:
+      command: python make.py '{inputs.inner.output2}' '{decisions.decision1}' '{output}'
+universes:
+  v1:
+    decisions: {decision1: a, inner.decision2: b}

@@ -1,7 +1,7 @@
 spec_version: "0.1.0"
 analyses:
   other:
-    path: ../other
+    path: other
 inputs:
   input1:
     path: data/input1.csv

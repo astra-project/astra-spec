@@ -13,7 +13,7 @@ from committed files and writes a **record** of how each was made, and a
 
 An `astra.yaml` (YAML 1.2) gives its `spec_version` (`"0.1.0"`) and maps of
 **elements**, each keyed by its **id** (`[a-z][a-z0-9_]*`). The snippets
-below are parts of `analysis/astra.yaml`, the file of the analysis in the
+below are excerpts of `analysis/astra.yaml`, the file of the analysis in the
 folder `analysis/`, the top of its repository, and its paths are relative.
 
 - An analysis can **declare** other analyses:
@@ -41,6 +41,17 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   The folder at its commit, or in the working tree, is the analysis's
   **identity**: one folder at one commit is one analysis however it is
   declared, and **another analysis** is one with another identity.
+
+  An analysis is **self-contained** if it reaches outside its folder only
+  through `url` and `commit`: no declaration by `path`, with or without a
+  `commit`, names a folder outside that analysis's folder, whether it is
+  in that analysis's file or in one reached from it through declarations
+  by `path`. Any other analysis is a **part**, such as `tools` (below), or
+  an analysis that declares its own folder at a commit where that folder
+  declared `..`. A part keeps its decisions, and the universes of an
+  analysis above it set them (below). The analysis at the top of a repository,
+  such as `analysis`, is self-contained unless a declaration it reaches by
+  `path` goes above that top, which breaks `DECLARATION_OUTSIDE_REPOSITORY`.
 
 - An **input** is one file, tracked in git with its analysis, at a `path`
   from the analysis's folder; a **stand-in**, such as a large-file pointer,
@@ -144,7 +155,9 @@ folder `analysis/`, the top of its repository, and its paths are relative.
   own analysis's by id, another's by address. With `derived_from` it
   inherits another universe's selection, replacing what it sets: its
   **effective selection**. Its own `decisions` set only decisions it uses
-  on some branch, and should set only those it uses.
+  on some branch, and should set only those it uses. Only a self-contained
+  analysis has universes of its own: a part's `universes` hold only
+  imports (below).
 
   ```yaml
   universes:
@@ -297,9 +310,11 @@ folder `analysis/`, the top of its repository, and its paths are relative.
       results belong to `analysis`
     - were `tools` to have a decision that only `output9` lists, it would
       still have nothing to set, as `analysis` reads nothing of `output9`
+    - `tools` declares `..`, outside its folder, so it is a part, and has
+      no universes of its own
 
   - An analysis never drives itself. A universe can't set a decision through
-    a declaration that leads back, such as `self: {path: .}`, or `stage`'s
+    a declaration that leads back, such as `self: {path: .}`, or `tools`'s
     `parent: {path: ..}`. Writing `self.decision1: b` instead of
     `decision1: b` would break `LOOPING_KEY`:
 
@@ -315,7 +330,9 @@ folder `analysis/`, the top of its repository, and its paths are relative.
     analysis: a `v1` that left `decision2` unset would break
     `MISSING_DECISION`, as `stage` plans `output3`, which lists it. A pin
     into `v1` can then read only what uses decisions that `v1` uses on some
-    branch, as `v1` may set no other.
+    branch, as `v1` may set no other. `stage` declares nothing outside its
+    folder, so it is self-contained and can have them; `tools`, a part,
+    couldn't have a `v1`.
 
   - An output that reads another analysis's output built per universe, or
     its switch, without a pin or pinned to one of its own analysis's
@@ -358,7 +375,8 @@ folder `analysis/`, the top of its repository, and its paths are relative.
 - Were `stage` to have a `u1` of its own, `#u1` in `analysis/astra.yaml`
   would still name `analysis`'s. To read `stage`'s own `u1` too it must be **imported** under
   another id and pinned to that. An import
-  selects and drives nothing.
+  selects and drives nothing, and it is the only entry a part's
+  `universes` may hold.
 
   ```yaml
   universes:
@@ -663,6 +681,7 @@ after the arrow. Rows that share a code are cases of one rule.
 | `OUTPUT_CYCLE` | MUST | No output reads itself through `inputs` and `cases`, directly or not, pinned or not |
 | `UNDECLARED_TEMPLATE_REF` | MUST | Every brace of a `command`, read from the left, is in `{{`, `}}` or a placeholder |
 | `UNDECLARED_TEMPLATE_REF` | MUST | Placeholders are `{inputs}`, `{output}`, and `{inputs.<entry>}` or `{decisions.<entry>}` for entries as listed |
+| `UNIVERSES_IN_PART` | MUST | A part's `universes` hold only imports |
 | `UNKNOWN_DERIVED_FROM` | MUST | `derived_from` names a universe of its analysis, never an import |
 | `DERIVED_FROM_CYCLE` | MUST | No chain of `derived_from` loops back to its universe |
 | `UNUSED_DECISION` | MUST | A universe's own `decisions` set only decisions it uses on some branch |

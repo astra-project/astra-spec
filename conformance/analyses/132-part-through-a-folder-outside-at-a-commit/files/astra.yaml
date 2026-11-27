@@ -1,0 +1,11 @@
+spec_version: "0.1.0"
+analyses:
+  study:
+    path: study
+outputs:
+  result:
+    type: metric
+    format: json
+    inputs: [study.output2#v1]
+    recipe:
+      command: python make.py '{inputs.study.output2#v1}' '{output}'

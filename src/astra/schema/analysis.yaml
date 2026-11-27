@@ -670,7 +670,10 @@ classes:
         description: >-
           The universes of the analysis, and the universes of other analyses
           it imports, keyed by id. An import has an `analysis` and a
-          `universe`.
+          `universe`. A part's universes hold only imports: in a part, a
+          declaration by `path`, in its file or in an analysis it reaches
+          through declarations by `path`, names a folder outside the
+          part's own.
       prior_insights:
         range: Insight
         multivalued: true

@@ -1,0 +1,5 @@
+{
+  "about": "A sub-analysis that declares its sibling holds only an import of the sibling's universe, and the top's universe sets its decision.",
+  "valid": true,
+  "must_not_report": ["UNIVERSES_IN_PART"]
+}

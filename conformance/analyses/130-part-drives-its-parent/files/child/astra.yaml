@@ -1,0 +1,14 @@
+spec_version: "0.1.0"
+analyses:
+  parent:
+    path: ..
+outputs:
+  output2:
+    type: table
+    format: csv
+    inputs: [parent.output1]
+    recipe:
+      command: python make.py '{inputs.parent.output1}' '{output}'
+universes:
+  v1:
+    decisions: {parent.decision1: a}

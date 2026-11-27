@@ -4,5 +4,6 @@
   "must_report": [
     {"code": "NOT_BUILT_IN_UNIVERSE", "file": "sub/astra.yaml"},
     {"code": "UNDRIVEN_DECLARATION", "file": "sub/astra.yaml"}
-  ]
+  ],
+  "must_not_report": ["UNIVERSES_IN_PART"]
 }
