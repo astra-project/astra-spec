@@ -465,6 +465,30 @@
   }
 }
 
+/* ---------- Pages of another project ---------- */
+
+/* The eyebrow above the title of a page mounted from another project: the
+   project and its release (overrides/main.html). */
+.md-typeset .astra-project {
+  display: block;
+  margin-bottom: -0.2rem;
+  font-family: var(--astra-ui);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  font-size: 0.82rem;
+  color: var(--astra-eyebrow);
+  text-decoration: none;
+}
+.md-typeset .astra-project:is(:hover, :focus) {
+  color: var(--md-accent-fg-color);
+}
+/* The release keeps its case and figures: in small caps `0rc2` reads `ORC2`. */
+.md-typeset .astra-project span {
+  font-variant-caps: normal;
+  letter-spacing: 0.02em;
+}
+
 /* ---------- Details ---------- */
 
 /* YAML keys in Blue Ink, as in the brand guide's specimen. */

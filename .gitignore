@@ -1,5 +1,7 @@
 # generated part of documentation
 /docs/elements/*.md
+# other projects' documentation, mounted on every docs build (zensical.toml's [project.extra.projects]):
+/docs/tools/
 # published schema artifacts, written on every docs build and served from gh-pages:
 # the merged models (_gen-yaml), and the JSON Schemas, the record's JSON-LD
 # context and rules.json copied from the committed project/ folders (_add-artifacts)

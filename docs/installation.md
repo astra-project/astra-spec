@@ -50,5 +50,5 @@ uv tool install 'astra-tools<0.3'
 
 - [Getting started](https://astra-spec.org/0.1/getting-started/) writes a first analysis and
   validates it.
-- The [CLI reference](cli.md) describes every command.
+- The [CLI reference](tools/cli.md) describes every command.
 - To work on astra-tools itself, see its [README](https://github.com/astra-project/astra-tools#readme).

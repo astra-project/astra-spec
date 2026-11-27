@@ -131,8 +131,18 @@ docs-serve: _docs-prep
 docs-clean:
   rm -rf site
 
-# Prepare the docs: the field reference and the published schema files
-_docs-prep: gen-doc docs-install
+# Prepare the docs: the field reference, the published schema files and the
+# other projects' documentation
+_docs-prep: gen-doc docs-install _docs-projects
+
+# A local checkout whose docs/ to mount in place of a project's tag, as
+# <name>=<path>: `just docs_local=tools=../astra-tools docs-serve`
+docs_local := ""
+
+# Mount the documentation of the projects zensical.toml names
+# ([project.extra.projects]) under docs/, each in the folder of its name
+_docs-projects:
+  uv run python tools/docs_projects.py {{docs_local}}
 
 # Run all tests
 [group('model development')]
