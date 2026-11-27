@@ -19,7 +19,7 @@ outputs:
     cases:
       a: input1
       b: output1
-      c: stage.output3#v1
+      c: stage.output3
   result:
     type: metric
     format: json

@@ -1,0 +1,16 @@
+spec_version: "0.1.0"
+analyses:
+  upstream:
+    url: "@url:upstream@"
+    commit: "@commit:U@"
+outputs:
+  output3:
+    type: data
+    format: csv
+    inputs: [upstream.output4#upstream_v1]
+    recipe:
+      command: python make.py '{inputs.upstream.output4#upstream_v1}' '{output}'
+universes:
+  upstream_v1:
+    analysis: upstream
+    universe: v1

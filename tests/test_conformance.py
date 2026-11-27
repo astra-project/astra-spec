@@ -4,8 +4,9 @@ Each case's folder holds its files, its `expected.json` and perhaps a `setup.sh`
 `.gitignore` and nothing astra-spec's `.gitignore` ignores. Its `expected.json` follows `expected.schema.json`, names
 rules of `rules.json`, gives a pointer only for a parse or schema code, and its
 `valid` agrees with the levels of the codes it must report. The case builds: its `setup.sh` runs to completion, or its
-files are committed once, and the folder `root` holds an `astra.yaml` in a git repository (in none, for a case of
-`NOT_IN_REPOSITORY`), with no placeholder left.
+files are committed once, and the folder `root` holds an `astra.yaml` in a git repository whose top holds one too (in
+none, for a case of `NOT_IN_REPOSITORY`; none need be at the top for a case of `MISSING_TOP_ANALYSIS`), with no
+placeholder left.
 The documents (`tests/data/`) are checked by `test_fixtures.py`.
 """
 
@@ -172,8 +173,9 @@ def test_expected_json_names_rules(case):
 
 @pytest.mark.parametrize("case", CASES, ids=name)
 def test_a_case_builds(case, tmp_path):
-    """The folder `root` holds an `astra.yaml`, in a git repository unless the case is one of `NOT_IN_REPOSITORY`, and
-    no placeholder is left in the working folder."""
+    """The folder `root` holds an `astra.yaml`, in a git repository whose top holds one too, unless the case is one of
+    `NOT_IN_REPOSITORY` (no repository) or `MISSING_TOP_ANALYSIS` (none need be at the top), and no placeholder is left
+    in the working folder."""
     case_expected = expected(case)
     work = build(case, tmp_path)
     root = work / case_expected.get("root", ".")
@@ -184,10 +186,14 @@ def test_a_case_builds(case, tmp_path):
         capture_output=True,
         text=True,
     )
-    outside = "NOT_IN_REPOSITORY" in [
-        entry["code"] for entry in case_expected.get("must_report", [])
-    ]
+    codes = [entry["code"] for entry in case_expected.get("must_report", [])]
+    outside = "NOT_IN_REPOSITORY" in codes
     assert (top.returncode != 0) == outside, top.stderr or top.stdout
+    if not outside and "MISSING_TOP_ANALYSIS" not in codes:
+        top_file = Path(top.stdout.strip()) / "astra.yaml"
+        assert top_file.is_file() and not top_file.is_symlink(), (
+            "the repository's top holds no astra.yaml"
+        )
     left = [
         path.relative_to(work).as_posix()
         for path in work.rglob("*")

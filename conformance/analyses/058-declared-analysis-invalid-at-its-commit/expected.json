@@ -4,5 +4,6 @@
   "must_report": [
     {"code": "DECLARED_ANALYSIS_INVALID", "file": "astra.yaml"},
     {"code": "MISSING_INPUT_FILE", "file": "stage/astra.yaml"}
-  ]
+  ],
+  "must_not_report": ["MISSING_TOP_ANALYSIS"]
 }

@@ -5,5 +5,5 @@
   "must_report": [
     {"code": "INPUT_IN_ANOTHER_ANALYSIS", "file": "analysis/astra.yaml"}
   ],
-  "must_not_report": ["MISSING_INPUT_FILE", "INPUT_NOT_TRACKED"]
+  "must_not_report": ["MISSING_INPUT_FILE", "INPUT_NOT_TRACKED", "MISSING_TOP_ANALYSIS"]
 }

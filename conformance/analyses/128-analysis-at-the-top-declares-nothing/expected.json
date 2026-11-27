@@ -1,0 +1,6 @@
+{
+  "about": "An analysis in a folder below the top of a repository whose top holds an astra.yaml that declares nothing.",
+  "root": "analysis",
+  "valid": true,
+  "must_not_report": ["MISSING_TOP_ANALYSIS"]
+}

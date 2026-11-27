@@ -1,0 +1,7 @@
+{
+  "about": "A sub-analysis that the analysis at the top declares by path has a universe of its own.",
+  "valid": false,
+  "must_report": [
+    {"code": "UNIVERSES_IN_SUB_ANALYSIS", "file": "stage/astra.yaml"}
+  ]
+}

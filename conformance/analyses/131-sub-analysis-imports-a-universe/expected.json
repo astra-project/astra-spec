@@ -1,0 +1,7 @@
+{
+  "about": "A sub-analysis's universes hold only an import of a remote's universe, which its output pins.",
+  "valid": false,
+  "must_report": [
+    {"code": "UNIVERSES_IN_SUB_ANALYSIS", "file": "stage/astra.yaml"}
+  ]
+}

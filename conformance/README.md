@@ -69,6 +69,10 @@ repository, and no path that astra-spec's `.gitignore` ignores, which that
 repository would leave out. `setup.sh` writes any such file in the working
 folder.
 
+The repository that holds the folder `root` has an `astra.yaml` file at its
+top, as the specification asks ([Rules](../docs/specification.md#rules)),
+unless the case is one of `MISSING_TOP_ANALYSIS`.
+
 **Building a case.**
 
 1. Make an empty working folder, in no git repository, and copy `files/`

@@ -1,7 +1,8 @@
 spec_version: "0.1.0"
 analyses:
   catalog:
-    path: catalog
+    url: "@url:catalog@"
+    commit: "@commit:C@"
 outputs:
   result:
     type: metric

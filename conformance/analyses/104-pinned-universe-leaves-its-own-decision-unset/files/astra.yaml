@@ -1,11 +1,12 @@
 spec_version: "0.1.0"
 analyses:
-  subanalysis:
-    path: subanalysis
+  upstream:
+    url: "@url:upstream@"
+    commit: "@commit:U@"
 outputs:
   result:
     type: metric
     format: json
-    inputs: [subanalysis.output1#v1]
+    inputs: [upstream.output1#v1]
     recipe:
-      command: python make.py '{inputs.subanalysis.output1#v1}' '{output}'
+      command: python make.py '{inputs.upstream.output1#v1}' '{output}'

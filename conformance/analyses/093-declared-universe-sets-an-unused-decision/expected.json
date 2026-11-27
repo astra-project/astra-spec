@@ -1,7 +1,0 @@
-{
-  "about": "A declared analysis's own universe sets a decision that its analysis uses on no branch.",
-  "valid": false,
-  "must_report": [
-    {"code": "UNUSED_DECISION", "file": "subanalysis/astra.yaml"}
-  ]
-}

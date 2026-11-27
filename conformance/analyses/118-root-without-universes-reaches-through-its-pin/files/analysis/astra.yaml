@@ -1,0 +1,11 @@
+spec_version: "0.1.0"
+analyses:
+  parent:
+    path: ..
+outputs:
+  result:
+    type: metric
+    format: json
+    inputs: [parent.output2#v1]
+    recipe:
+      command: python make.py '{inputs.parent.output2#v1}' '{output}'

@@ -1,11 +1,12 @@
 spec_version: "0.1.0"
 analyses:
-  sub2:
-    path: ../sub2
+  upstream:
+    url: "@url:upstream@"
+    commit: "@commit:U@"
 outputs:
   output1:
     type: table
     format: csv
-    inputs: [sub2.switch2#w1]
+    inputs: [upstream.switch2#w1]
     recipe:
-      command: python make.py '{inputs.sub2.switch2#w1}' '{output}'
+      command: python make.py '{inputs.upstream.switch2#w1}' '{output}'

@@ -401,6 +401,12 @@
       "statement": "The driving analysis is in a git repository's working tree"
     },
     {
+      "code": "MISSING_TOP_ANALYSIS",
+      "layer": "validator",
+      "level": "MUST",
+      "statement": "The top of the driving analysis's repository holds an `astra.yaml` file (no symlink or folder)"
+    },
+    {
       "code": "MISSING_INPUT_FILE",
       "layer": "validator",
       "level": "MUST",
@@ -491,6 +497,12 @@
       "statement": "Every brace of a `command`, read from the left, is in `{{`, `}}` or a placeholder; Placeholders are `{inputs}`, `{output}`, and `{inputs.<entry>}` or `{decisions.<entry>}` for entries as listed"
     },
     {
+      "code": "UNIVERSES_IN_SUB_ANALYSIS",
+      "layer": "validator",
+      "level": "MUST",
+      "statement": "A sub-analysis has no `universes`"
+    },
+    {
       "code": "UNKNOWN_DERIVED_FROM",
       "layer": "validator",
       "level": "MUST",
@@ -549,6 +561,12 @@
       "layer": "validator",
       "level": "MUST",
       "statement": "No universe key goes through a declaration that leads back"
+    },
+    {
+      "code": "KEY_THROUGH_COMMIT",
+      "layer": "validator",
+      "level": "MUST",
+      "statement": "No universe key goes through a declaration with a `commit`"
     },
     {
       "code": "UNKNOWN_PIN_UNIVERSE",
@@ -658,12 +676,6 @@
       "layer": "runner",
       "level": "MUST",
       "statement": "Each recipe runs in its own analysis's folder, even when driven"
-    },
-    {
-      "code": "NOT_AT_COMMIT",
-      "layer": "runner",
-      "level": "MUST",
-      "statement": "A runner drives an analysis from a commit on exactly its files at that commit"
     },
     {
       "code": "REBUILT_FROM_COMMIT",
