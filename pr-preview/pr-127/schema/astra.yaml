@@ -442,24 +442,31 @@ enums:
   OutputType:
     name: OutputType
     definition_uri: https://w3id.org/astra/OutputType
-    description: The kind of artefact an output is.
+    description: 'The kind of artefact an output is. A `metric` is one quantity, with
+      its uncertainty, unit or label if it has them: as JSON, a bare number or string,
+      or an object with a `value` and optional `uncertainty`, `unit` and `label`.
+      Several quantities, such as the whole record of a fit, are `data` or a `table`.'
     from_schema: https://w3id.org/astra/analysis
     permissible_values:
       metric:
         text: metric
-        description: A metric or measurement
+        description: A single quantity, such as a measurement, a fitted parameter
+          or a score.
       figure:
         text: figure
-        description: A figure or visualization
+        description: A plot, chart, map or other image.
       table:
         text: table
-        description: A table of data
+        description: Records in rows and columns, such as a CSV file or a table for
+          a paper.
       data:
         text: data
-        description: A data file or dataset
+        description: Any other data, such as a dataset, a model or a record of several
+          quantities.
       report:
         text: report
-        description: A report or document
+        description: Prose for people to read, such as a paper, a notebook or a web
+          page.
 slots:
   resources__cpus:
     name: resources__cpus
@@ -1234,11 +1241,9 @@ slots:
     inlined_as_list: false
   analysis__universes:
     name: analysis__universes
-    description: 'The universes of the analysis, and the universes of other analyses
-      it imports, keyed by id. An import has an `analysis` and a `universe`. A part''s
-      universes hold only imports: in a part, a declaration by `path`, in its file
-      or in an analysis it reaches through declarations by `path`, names a folder
-      outside the part''s own.'
+    description: The universes of the analysis, and the universes of other analyses
+      it imports, keyed by id. An import has an `analysis` and a `universe`. A sub-analysis,
+      in a folder below the top of its repository, has none.
     from_schema: https://w3id.org/astra/analysis
     slot_uri: astra:universes
     alias: universes
@@ -2262,11 +2267,9 @@ classes:
         inlined: true
       universes:
         name: universes
-        description: 'The universes of the analysis, and the universes of other analyses
+        description: The universes of the analysis, and the universes of other analyses
           it imports, keyed by id. An import has an `analysis` and a `universe`. A
-          part''s universes hold only imports: in a part, a declaration by `path`,
-          in its file or in an analysis it reaches through declarations by `path`,
-          names a folder outside the part''s own.'
+          sub-analysis, in a folder below the top of its repository, has none.
         range: Universe
         multivalued: true
         inlined: true
@@ -2479,6 +2482,6 @@ classes:
     class_uri: astra:Insight
 metamodel_version: 1.12.0
 source_file: analysis.yaml
-source_file_date: '2026-11-27T10:17:30'
-source_file_size: 24699
+source_file_date: '2026-11-27T20:38:28'
+source_file_size: 25166
 

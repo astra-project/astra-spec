@@ -972,7 +972,7 @@ from committed files and writes a <strong>record</strong> of how each was made, 
 <h2 id="elements">Elements<a class="headerlink" href="#elements" title="Permanent link">&para;</a></h2>
 <p>An <code>astra.yaml</code> (YAML 1.2) gives its <code>spec_version</code> (<code>"0.1.0"</code>) and maps of
 <strong>elements</strong>, each keyed by its <strong>id</strong> (<code>[a-z][a-z0-9_]*</code>). The snippets
-below are excerpts of <code>analysis/astra.yaml</code>, the file of the analysis in the
+below are parts of <code>analysis/astra.yaml</code>, the file of the analysis in the
 folder <code>analysis/</code>, the top of its repository, and its paths are relative.</p>
 <ul>
 <li>An analysis can <strong>declare</strong> other analyses:</li>
@@ -998,16 +998,9 @@ folder <code>analysis/</code>, the top of its repository, and its paths are rela
 <p>The folder at its commit, or in the working tree, is the analysis's
   <strong>identity</strong>: one folder at one commit is one analysis however it is
   declared, and <strong>another analysis</strong> is one with another identity.</p>
-<p>An analysis is <strong>self-contained</strong> if it reaches outside its folder only
-  through <code>url</code> and <code>commit</code>: no declaration by <code>path</code>, with or without a
-  <code>commit</code>, names a folder outside that analysis's folder, whether it is
-  in that analysis's file or in one reached from it through declarations
-  by <code>path</code>. Any other analysis is a <strong>part</strong>, such as <code>tools</code> (below), or
-  an analysis that declares its own folder at a commit where that folder
-  declared <code>..</code>. A part keeps its decisions, and the universes of an
-  analysis above it set them (below). The analysis at the top of a repository,
-  such as <code>analysis</code>, is self-contained unless a declaration it reaches by
-  <code>path</code> goes above that top, which breaks <code>DECLARATION_OUTSIDE_REPOSITORY</code>.</p>
+<p>An analysis in a folder below the top of its repository, such as <code>stage</code>,
+  is a <strong>sub-analysis</strong>. It has no <code>universes</code>: those of the analysis at
+  the top, here <code>analysis</code>, set its decisions (below).</p>
 <ul>
 <li>An <strong>input</strong> is one file, tracked in git with its analysis, at a <code>path</code>
   from the analysis's folder; a <strong>stand-in</strong>, such as a large-file pointer,
@@ -1110,9 +1103,7 @@ folder <code>analysis/</code>, the top of its repository, and its paths are rela
   own analysis's by id, another's by address. With <code>derived_from</code> it
   inherits another universe's selection, replacing what it sets: its
   <strong>effective selection</strong>. Its own <code>decisions</code> set only decisions it uses
-  on some branch, and should set only those it uses. Only a self-contained
-  analysis has universes of its own: a part's <code>universes</code> hold only
-  imports (below).</p>
+  on some branch, and should set only those it uses.</p>
 </li>
 </ul>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">universes</span><span class="p">:</span>
@@ -1146,14 +1137,14 @@ folder <code>analysis/</code>, the top of its repository, and its paths are rela
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">output2</span><span class="p">:</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">csv</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="nt">inputs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">output1#u1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">output1#u2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">stage.output3#v1</span><span class="p p-Indicator">]</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="nt">inputs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">output1#u1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">output1#u2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">upstream.output12#v1</span><span class="p p-Indicator">]</span>
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="nt">recipe</span><span class="p">:</span>
 </span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">      </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python src/output2.py {inputs} {output}</span>
 </span></code></pre></div>
 <ul>
 <li><code>output2</code> reads <code>output1</code> as built in <code>u1</code> and in <code>u2</code></li>
-<li><code>analysis</code> has no <code>v1</code>, so <code>stage.output3#v1</code> reads <code>stage</code>'s own
-    result in its <code>v1</code></li>
+<li><code>analysis</code> has no <code>v1</code>, so <code>upstream.output12#v1</code> reads <code>upstream</code>'s
+    own result in its <code>v1</code></li>
 <li>
 <p>a pinned switch reads as it is in its pin's universe: <code>switch1#u1</code>
     reads <code>stage.output3</code> as built in <code>u1</code></p>
@@ -1189,10 +1180,10 @@ folder <code>analysis/</code>, the top of its repository, and its paths are rela
 <li>The analysis being validated or built, here <code>analysis</code>, is the <strong>driving
   analysis</strong>. Its universes can set the decisions of the analyses it
   declares by <code>path</code>, with no <code>commit</code>, and of those they declare so in
-  turn; where they do, it <strong>drives</strong> them. As only a self-contained
-  analysis has universes of its own, a universe sets decisions only of
-  analyses inside its own analysis's folder, in the working tree or at the
-  commit its analysis is read at:</li>
+  turn; where they do, it <strong>drives</strong> them. As a sub-analysis has no
+  universes, a universe sets decisions only of sub-analyses in its own
+  analysis's repository, in the working tree or at the commit its analysis
+  is read at:</li>
 </ul>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">universes</span><span class="p">:</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">u1</span><span class="p">:</span>
@@ -1200,8 +1191,7 @@ folder <code>analysis/</code>, the top of its repository, and its paths are rela
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">stage.decision2</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">b</span>
 </span></code></pre></div>
-<p>In <code>u1</code>, <code>stage</code> is built with <code>decision2: b</code>, whatever its own universes
-  say. The <code>stage.output3</code> that <code>output1</code> reads is built with <code>b</code> selected
+<p>In <code>u1</code>, <code>stage</code> is built with <code>decision2: b</code>. The <code>stage.output3</code> that <code>output1</code> reads is built with <code>b</code> selected
   for <code>stage.decision2</code>, and its result belongs to <code>analysis</code>.</p>
 <p>A universe sets a decision further down by its full address. Were <code>stage</code>
   to declare <code>inner</code>, which has a <code>decision4</code>, and <code>output1</code> to list it as
@@ -1234,8 +1224,8 @@ folder <code>analysis/</code>, the top of its repository, and its paths are rela
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 </span></code></pre></div>
 <p>this chain isn't driven, even though <code>stage.inner</code> is. Through it,
-<code>output11</code> can read <code>inner</code>'s outputs built once, or pinned to <code>inner</code>'s
-own universes, but not one built per universe in <code>u1</code> or <code>u2</code>.</p>
+<code>output11</code> can read <code>inner</code>'s outputs built once, but not one built per
+universe in <code>u1</code> or <code>u2</code>.</p>
 </li>
 <li>
 <p>An analysis with no decisions of its own, or none that a universe of
@@ -1260,13 +1250,11 @@ own universes, but not one built per universe in <code>u1</code> or <code>u2</co
   results belong to <code>analysis</code></li>
 <li>were <code>tools</code> to have a decision that only <code>output9</code> lists, it would
   still have nothing to set, as <code>analysis</code> reads nothing of <code>output9</code></li>
-<li><code>tools</code> declares <code>..</code>, outside its folder, so it is a part, and has
-  no universes of its own</li>
 </ul>
 </li>
 <li>
 <p>An analysis never drives itself. A universe can't set a decision through
-    a declaration that leads back, such as <code>self: {path: .}</code>, or <code>tools</code>'s
+    a declaration that leads back, such as <code>self: {path: .}</code>, or <code>stage</code>'s
     <code>parent: {path: ..}</code>. Writing <code>self.decision1: b</code> instead of
     <code>decision1: b</code> would break <code>LOOPING_KEY</code>:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">universes</span><span class="p">:</span>
@@ -1287,14 +1275,10 @@ own universes, but not one built per universe in <code>u1</code> or <code>u2</co
     <code>commit</code>.</p>
 </li>
 <li>
-<p><code>stage</code>'s own universes, such as <code>v1</code>, don't set its decisions in <code>u1</code>
-    and <code>u2</code>, but must still be valid, with <code>stage</code> as the driving
-    analysis: a <code>v1</code> that left <code>decision2</code> unset would break
-    <code>MISSING_DECISION</code>, as <code>stage</code> plans <code>output3</code>, which lists it. A pin
-    into <code>v1</code> can then read only what uses decisions that <code>v1</code> uses on some
-    branch, as <code>v1</code> may set no other. <code>stage</code> declares nothing outside its
-    folder, so it is self-contained and can have them; <code>tools</code>, a part,
-    couldn't have a <code>v1</code>.</p>
+<p><code>upstream</code>'s own universes, such as <code>v1</code>, must be valid, with
+    <code>upstream</code> as the driving analysis at its commit. A pin into <code>v1</code> can
+    then read only what uses decisions that <code>v1</code> uses on some branch, as
+    <code>v1</code> may set no other.</p>
 </li>
 <li>
 <p>An output that reads another analysis's output built per universe, or
@@ -1310,8 +1294,8 @@ own universes, but not one built per universe in <code>u1</code> or <code>u2</co
 </span></code></pre></div>
 <p><code>output1</code> would break <code>NOT_BUILT_IN_UNIVERSE</code>: nothing would say which
 <code>decision2</code> to build <code>stage.output3</code> with. It could still read what
-doesn't vary: <code>stage.input2</code>, <code>stage.output3#v1</code>, or <code>upstream.output4</code>,
-which is built once.</p>
+doesn't vary: <code>stage.input2</code>, <code>upstream.output4</code>, which is built once,
+or <code>upstream.output12#v1</code>.</p>
 </li>
 <li>
 <p>A switch can choose between analyses. Were <code>analysis/astra.yaml</code> also
@@ -1331,29 +1315,28 @@ the reverse.</p>
   shared by several, such as a seed, is read by address from the analysis
   that holds it.</p>
 <ul>
-<li>Were <code>stage</code> to have a <code>u1</code> of its own, <code>#u1</code> in <code>analysis/astra.yaml</code>
-  would still name <code>analysis</code>'s. To read <code>stage</code>'s own <code>u1</code> too it must be <strong>imported</strong> under
-  another id and pinned to that. An import
-  selects and drives nothing, and it is the only entry a part's
-  <code>universes</code> may hold.</li>
+<li><code>previous</code> has a <code>u1</code> too, but <code>#u1</code> in <code>analysis/astra.yaml</code> still
+  names <code>analysis</code>'s. To read <code>previous</code>'s own <code>u1</code> it must be <strong>imported</strong>
+  under another id and pinned to that. An import selects and drives
+  nothing.</li>
 </ul>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nt">universes</span><span class="p">:</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">stage_u1</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">analysis</span><span class="p">:</span><span class="w"> </span><span class="nv">stage</span><span class="p p-Indicator">,</span><span class="nt"> universe</span><span class="p">:</span><span class="w"> </span><span class="nv">u1</span><span class="p p-Indicator">}</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">previous_u1</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">analysis</span><span class="p">:</span><span class="w"> </span><span class="nv">previous</span><span class="p p-Indicator">,</span><span class="nt"> universe</span><span class="p">:</span><span class="w"> </span><span class="nv">u1</span><span class="p p-Indicator">}</span>
 </span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nt">outputs</span><span class="p">:</span>
 </span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span><span class="nt">output5</span><span class="p">:</span>
 </span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">table</span>
 </span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">csv</span>
 </span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">    </span><span class="nt">inputs</span><span class="p">:</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stage.output3#u1</span>
-</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stage.output3#stage_u1</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">output1#u1</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">previous.output1#previous_u1</span>
 </span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">    </span><span class="nt">recipe</span><span class="p">:</span>
 </span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">      </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python src/output5.py {inputs} {output}</span>
 </span></code></pre></div>
 <ul>
-<li><code>stage.output3#u1</code> is built in, and belongs to, <code>analysis</code>'s <code>u1</code></li>
+<li><code>output1#u1</code> is built in, and belongs to, <code>analysis</code>'s <code>u1</code></li>
 <li>
-<p><code>stage.output3#stage_u1</code> is built in <code>stage</code>'s own <code>u1</code> and belongs to
-    <code>stage</code></p>
+<p><code>previous.output1#previous_u1</code> is built in <code>previous</code>'s own <code>u1</code> and
+    belongs to <code>previous</code></p>
 </li>
 <li>
 <p>An <strong>insight</strong> is a <code>claim</code> whose <code>evidence</code> cites a <code>doi</code> or an output
@@ -1464,9 +1447,6 @@ the reverse.</p>
 </span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">    </span><span class="nt">decisions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">decision2</span><span class="p p-Indicator">]</span>
 </span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">    </span><span class="nt">recipe</span><span class="p">:</span>
 </span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="w">      </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python src/output3.py {inputs.input2} {decisions.decision2} {output}</span>
-</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="nt">universes</span><span class="p">:</span>
-</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="w">  </span><span class="nt">v1</span><span class="p">:</span>
-</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="w">    </span><span class="nt">decisions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">decision2</span><span class="p">:</span><span class="w"> </span><span class="nv">a</span><span class="p p-Indicator">}</span>
 </span></code></pre></div>
 <p>the build is:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>┌─ u1 · analysis&#39;s own ────────────────────────────────┐
@@ -1481,16 +1461,16 @@ the reverse.</p>
 </span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>│  stage.output3 (decision2 = b) ─┼─► output1          │── #u2 ──► output2 ◄── insight1
 </span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>│  upstream.output4 ──────────────┘   (decision1 = a)  │         ▲
 </span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>└──────────────────────────────────────────────────────┘         │
-</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>┌─ v1 · stage&#39;s own ───────────────────────────────────┐         │
-</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>│  output3 (decision2 = a)                             │── #v1 ──┘
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>┌─ v1 · upstream&#39;s own ────────────────────────────────┐         │
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>│  output12, read at its commit                        │── #v1 ──┘
 </span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>└──────────────────────────────────────────────────────┘
 </span></code></pre></div>
 <ul>
 <li>
 <p>the planned results are <code>output2</code>, <code>output1</code> in <code>u1</code> and <code>u2</code>,
-    <code>output6</code> in <code>u1</code>, <code>stage.output3</code> in <code>u1</code>, <code>u2</code> and <code>v1</code>, and
-    <code>upstream.output4</code>; <code>output6</code> isn't built in <code>u2</code>, where <code>switch1</code> has
-    no case for <code>a</code></p>
+    <code>output6</code> in <code>u1</code>, <code>stage.output3</code> in <code>u1</code> and <code>u2</code>, <code>upstream.output4</code>,
+    and <code>upstream.output12</code> in <code>v1</code>; <code>output6</code> isn't built in <code>u2</code>, where
+    <code>switch1</code> has no case for <code>a</code></p>
 </li>
 <li>
 <p>A <strong>runner</strong> builds each planned result by running its output's recipe in
@@ -1502,9 +1482,9 @@ the reverse.</p>
   analysis's commit. A switch of such an analysis is read with its
   files at its commit: the result its case gives is a result from a commit.</p>
 </li>
-<li>at its commit, <code>upstream</code> has an output <code>output4</code>, built once, with its
-    result and record committed: the runner reads them and runs no recipe
-    of <code>upstream</code>'s</li>
+<li>at its commit, <code>upstream</code> has an output <code>output4</code>, built once, and an
+    output <code>output12</code>, built in its <code>v1</code>, with their results and records
+    committed: the runner reads them and runs no recipe of <code>upstream</code>'s</li>
 <li>
 <p><code>previous</code> reads the analysis's own earlier results the same way</p>
 </li>
@@ -1568,7 +1548,7 @@ the reverse.</p>
 <tbody>
 <tr>
 <td><code>analysis/stage/data/input2.csv</code> changes</td>
-<td>The seven results built are stale; <code>upstream.output4</code> stays unchanged</td>
+<td>The six results built are stale; <code>upstream</code>'s stay unchanged</td>
 </tr>
 <tr>
 <td><code>u2</code> selects <code>a</code> for <code>stage.decision2</code></td>
@@ -1591,7 +1571,11 @@ the reverse.</p>
 <ul>
 <li>
 <p>A result's bytes are <strong>present</strong> if its default place (below) holds the
-  recorded ones, else <strong>absent</strong>. The record of a result from a commit, at
+  recorded ones, or a stand-in through which they are read there, else
+  <strong>absent</strong>. A stand-in may take their place as it may an input's: where
+  it stands for the recorded bytes and they aren't there, they are absent
+  and <code>ABSENT_RESULT</code> isn't broken. One that gives no hash is taken to
+  stand for them. The record of a result from a commit, at
   the declared commit B, names an earlier commit A; the result is unchanged
   if nothing compared changed between A and B and the results it was made
   from are unchanged, and gets a bytes status, from what B holds, only if a
@@ -1623,7 +1607,6 @@ the reverse.</p>
 </span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>analysis/.astra/records/u1/stage.output3.json    analysis/results/u1/stage.output3.csv
 </span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>analysis/.astra/records/u2/output1.json          analysis/results/u2/output1.json
 </span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>analysis/.astra/records/u2/stage.output3.json    analysis/results/u2/stage.output3.csv
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>analysis/stage/.astra/records/v1/output3.json    analysis/stage/results/v1/output3.csv
 </span></code></pre></div>
 <h2 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">&para;</a></h2>
 <p>Each rule has a code, a level (MUST or SHOULD, as in BCP 14) and a layer, set
@@ -1861,9 +1844,9 @@ after the arrow. Rows that share a code are cases of one rule.</p>
 <td>Placeholders are <code>{inputs}</code>, <code>{output}</code>, and <code>{inputs.&lt;entry&gt;}</code> or <code>{decisions.&lt;entry&gt;}</code> for entries as listed</td>
 </tr>
 <tr>
-<td><code>UNIVERSES_IN_PART</code></td>
+<td><code>UNIVERSES_IN_SUB_ANALYSIS</code></td>
 <td>MUST</td>
-<td>A part's <code>universes</code> hold only imports</td>
+<td>A sub-analysis has no <code>universes</code></td>
 </tr>
 <tr>
 <td><code>UNKNOWN_DERIVED_FROM</code></td>
@@ -1998,7 +1981,7 @@ after the arrow. Rows that share a code are cases of one rule.</p>
 <tr>
 <td><code>ABSENT_RESULT</code></td>
 <td>SHOULD</td>
-<td>Its recorded bytes are at its default place, bar an unread result from a commit → <code>absent</code></td>
+<td>Its recorded bytes, or a stand-in for them, are at its default place, bar an unread result from a commit → <code>absent</code></td>
 </tr>
 <tr>
 <td><code>STALE_EVIDENCE</code></td>
@@ -2013,7 +1996,7 @@ after the arrow. Rows that share a code are cases of one rule.</p>
 <tr>
 <td><code>UNRECORDED_RESULT</code></td>
 <td>MUST</td>
-<td>A runner writes each result it makes: a record at each place, bytes at each default place</td>
+<td>A runner writes each result it makes: a record at each place, bytes or a stand-in for them at each default place</td>
 </tr>
 <tr>
 <td><code>FALSE_RECORD</code></td>

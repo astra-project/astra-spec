@@ -378,7 +378,7 @@
       "type": "object"
     },
     "OutputType": {
-      "description": "The kind of artefact an output is.",
+      "description": "The kind of artefact an output is. A `metric` is one quantity, with its uncertainty, unit or label if it has them: as JSON, a bare number or string, or an object with a `value` and optional `uncertainty`, `unit` and `label`. Several quantities, such as the whole record of a fit, are `data` or a `table`.",
       "enum": [
         "metric",
         "figure",
@@ -1002,7 +1002,7 @@
       "additionalProperties": {
         "$ref": "#/$defs/Universe__identifier_optional"
       },
-      "description": "The universes of the analysis, and the universes of other analyses it imports, keyed by id. An import has an `analysis` and a `universe`. A part's universes hold only imports: in a part, a declaration by `path`, in its file or in an analysis it reaches through declarations by `path`, names a folder outside the part's own.",
+      "description": "The universes of the analysis, and the universes of other analyses it imports, keyed by id. An import has an `analysis` and a `universe`. A sub-analysis, in a folder below the top of its repository, has none.",
       "propertyNames": {
         "pattern": "^[a-z][a-z0-9_]*$"
       },
