@@ -1,0 +1,8 @@
+{
+  "about": "An analysis in a folder below the top of a repository whose top holds no astra.yaml.",
+  "root": "analysis",
+  "valid": false,
+  "must_report": [
+    {"code": "MISSING_TOP_ANALYSIS"}
+  ]
+}

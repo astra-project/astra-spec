@@ -2,7 +2,7 @@
 
 > ASTRA (Agentic Schema for Transparent Research Analysis) is a YAML specification for scientific analyses. An `astra.yaml` file records an experiment's inputs, outputs, methodological decisions, and evidence, so that agents and humans can validate, reproduce, and extend the work. This file is a self-contained briefing for AI agents: it explains the philosophy of the format and how to author and read ASTRA analyses.
 
-ASTRA is execution- and tooling-agnostic: the spec describes *what* an analysis does and *why*, not how to run it. An analysis is a folder in a git repository with an `astra.yaml` at its top, plain YAML authored with any editor. Recipes declare shell commands that a runner — an agent, a workflow tool, or a human — expands and runs from a commit, writing a record of how each result was made; nothing in the format depends on any particular tool.
+ASTRA is execution- and tooling-agnostic: the spec describes *what* an analysis does and *why*, not how to run it. An analysis is a git repository with an `astra.yaml` at its top, plain YAML authored with any editor, and its working tree can also hold sub-analyses, each in its own folder with its own `astra.yaml`. Recipes declare shell commands that a runner — an agent, a workflow tool, or a human — expands and runs from a commit, writing a record of how each result was made; nothing in the format depends on any particular tool.
 
 Core concepts:
 
@@ -123,6 +123,7 @@ Format rules (what any conforming validator enforces):
 - Clashing names: an input and an output (switches included) never share an ID, nor an output and a declared analysis.
 - Cross-analysis references use addresses: `<declaration>.<element>` (`stage.output3`, `stage.decision2`), further down by chaining (`stage.inner.decision4`). A reference may end in a pin, `#` and a universe's ID, to read the result as built in that universe: `#u` names the file's own universe `u`, else the declared analysis's. An output reading another analysis's output built per universe without a pin needs that analysis's decisions set by the universes; an analysis never sets its own decisions through a declaration that leads back to it.
 - A universe must select one existing, non-excluded option for every decision it uses, and set only decisions it uses on some branch, without violating any `requires` / `incompatible_with` constraint.
+- The top of the repository holds an `astra.yaml`, not a symlink.
 - Each evidence item sets exactly one of `doi` or `artifact`.
 
 ## Examples

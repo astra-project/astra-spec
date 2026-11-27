@@ -1,19 +1,20 @@
 # The ASTRA specification
 
-ASTRA records a research **analysis**, a folder in a git repository with an
-`astra.yaml` at its top, so that every choice in it is explicit and every
-result can be checked against how it was made. Analyses communicate
-natively, sharing inputs, outputs and decisions by address. A **validator**
-checks the files against git, a **runner** builds the results from committed
-files and writes a **record** of how each was made, and a **checker** later
-compares each record with the analysis as it then is.
+ASTRA records a research **analysis**, a git repository with an `astra.yaml`
+at its top, so that every choice in it is explicit and every result can be
+checked against how it was made. Its working tree can also hold
+sub-analyses, each in its own folder with its own `astra.yaml`. Analyses
+communicate natively, sharing inputs, outputs and decisions by address. A
+**validator** checks the files against git, a **runner** builds the results
+from committed files and writes a **record** of how each was made, and a
+**checker** later compares each record with the analysis as it then is.
 
 ## Elements
 
 An `astra.yaml` (YAML 1.2) gives its `spec_version` (`"0.1.0"`) and maps of
 **elements**, each keyed by its **id** (`[a-z][a-z0-9_]*`). The snippets
 below are parts of `analysis/astra.yaml`, the file of the analysis in the
-folder `analysis/`, and its paths are relative.
+folder `analysis/`, the top of its repository, and its paths are relative.
 
 - An analysis can **declare** other analyses:
 
@@ -644,6 +645,7 @@ after the arrow. Rows that share a code are cases of one rule.
 | `INVALID_COMMIT` | MUST | Every `commit` is a full commit id: 40 or 64 lowercase hex digits |
 | **validator** | | |
 | `NOT_IN_REPOSITORY` | MUST | The driving analysis is in a git repository's working tree |
+| `MISSING_TOP_ANALYSIS` | MUST | The top of the driving analysis's repository holds an `astra.yaml` file (no symlink or folder) |
 | `MISSING_INPUT_FILE` | MUST | An input's `path` names a file (no symlink, folder or gitlink) or a stand-in |
 | `INPUT_NOT_TRACKED` | MUST | An input's file or stand-in is tracked in its analysis's repository |
 | `INPUT_IN_ANOTHER_ANALYSIS` | MUST | An input's file is in its analysis's folder, in no **nested analysis** (a folder below with an `astra.yaml`) |

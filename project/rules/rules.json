@@ -401,6 +401,12 @@
       "statement": "The driving analysis is in a git repository's working tree"
     },
     {
+      "code": "MISSING_TOP_ANALYSIS",
+      "layer": "validator",
+      "level": "MUST",
+      "statement": "The top of the driving analysis's repository holds an `astra.yaml` file (no symlink or folder)"
+    },
+    {
       "code": "MISSING_INPUT_FILE",
       "layer": "validator",
       "level": "MUST",
